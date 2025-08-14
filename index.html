@@ -116,8 +116,8 @@
         <p>
           <strong>When:</strong> Friday, August 29 — 4:00 PM
           <br>
-          <button id="dressCodeBtn" style="background:#111;color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:14px;margin:6px 0;" disabled>
-            👗 Show Dress Code
+          <button id="dressCodeBtn" style="background:#111;color:#FCC100;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:14px;margin:6px 0;" disabled>
+           <strong> 👗 SHOW DRESS CODE </strong>
           </button>
           <br>
           <strong>Where:</strong>
@@ -194,10 +194,10 @@
       dressCodeBtn.addEventListener('click', function() {
         if (!dressCodeImg.classList.contains('show')) {
           dressCodeImg.classList.add('show');
-          this.textContent = '❌ Hide Dress Code';
+          this.textContent = '❌ HIDE DRESS CODE';
         } else {
           dressCodeImg.classList.remove('show');
-          this.textContent = '👗 Show Dress Code';
+          this.textContent = '👗 SHOW DRESS CODE';
         }
       });
 
@@ -205,3 +205,4 @@
   </script>
 </body>
 </html>
+
