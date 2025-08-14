@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>You've Been Hacked — (but not really)</title>
+  <style>
+    :root {
+      --bg: #000;
+      --text: #00ff6a;
+      --muted: #888;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--bg);
+      color: var(--text);
+    }
+    #wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .flash {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .flash.on { opacity: 1; }
+    #terminal {
+      width: 100%;
+      height: 64vh;
+      background: #000;
+      padding: 22px;
+      border-radius: 6px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.6);
+      overflow: auto;
+      border: 1px solid rgba(255,255,255,.04);
+    }
+    .line { white-space: pre-wrap; font-size: 16px; line-height: 1.45; }
+    .muted { color: var(--muted); }
+    #reveal {
+      display: none;
+      margin-top: 18px;
+      background: #0b0b0b;
+      border-radius: 8px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.03);
+    }
+    #reveal h2 { color: #fff; margin: 0 0 8px 0; font-size: 20px; }
+    #reveal p { margin: 0 0 12px 0; color: #ddd; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 12px; }
+    @media (max-width:600px) {
+      #terminal { height: 56vh; padding: 14px; font-size: 15px; }
+    }
+
+    /* Dress Code overlay animation */
+    .terminal-container {
+      position: relative;
+      width: 100%;
+      max-width: 980px;
+      margin: auto;
+    }
+    #dressCodeImg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #000;
+      text-align: center;
+      padding: 10px;
+      border-radius: 6px;
+      z-index: 5;
+
+      opacity: 0;
+      transform: translateY(-120%);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+    }
+    #dressCodeImg.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+  <script>
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || e.key === 'F12') {
+        e.preventDefault();
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="flash" id="flash"></div>
+  <div id="wrap">
+    <div style="width:100%">
+      <div class="terminal-container">
+        <div id="terminal" aria-live="polite" role="status"></div>
+
+        <div id="dressCodeImg">
+          <img src="https://myaxis.ai/wp-content/uploads/2025/08/poster-1.png" alt="Dress Code" style="max-height:60vh; border-radius:6px;">
+        </div>
+      </div>
+
+      <div id="reveal" aria-hidden="true">
+        <h2>🎮 GAME NIGHT — You're Invited</h2>
+        <p>
+          <strong>When:</strong> Friday, August 29 — 4:00 PM
+          <br>
+          <button id="dressCodeBtn" style="background:#111;color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:14px;margin:6px 0;" disabled>
+            👗 Show Dress Code
+          </button>
+          <br>
+          <strong>Where:</strong>
+          <a href="https://share.google/sG7XEjvv3k4QIrNZh" target="_blank">CLICK ME IF YOU DARE!</a>
+        </p>
+        <p>We've prepared games, snacks, and a prize for the winner. Come ready to win (or lose gloriously).</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      const terminal = document.getElementById('terminal');
+      const flash = document.getElementById('flash');
+      const reveal = document.getElementById('reveal');
+      const dressCodeBtn = document.getElementById('dressCodeBtn');
+      const dressCodeImg = document.getElementById('dressCodeImg');
+
+      const lines = [
+        "[!! ALERT !!]",
+        "Security: Unauthorized access detected...",
+        "Tracing connection...",
+        "IP: 192.0.2." + Math.floor(Math.random()*255),
+        "Enumerating files...",
+        "Downloading: invite_payload.zip (size: 4.2KB)",
+        "Decrypting...",
+        "",
+        "YOU'VE BEEN HACKED",
+        "...just kidding.",
+      ];
+      let i = 0;
+
+      function appendLine(text, cls){
+        const d = document.createElement('div');
+        d.className = 'line' + (cls?(' '+cls):'');
+        d.textContent = text;
+        terminal.appendChild(d);
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      function typeLines() {
+        if (i >= lines.length) return finishSequence();
+        const text = lines[i++];
+        let idx = 0;
+        const el = document.createElement('div'); el.className='line'; terminal.appendChild(el);
+        const t = setInterval(()=>{
+          el.textContent = text.slice(0, idx++);
+          terminal.scrollTop = terminal.scrollHeight;
+          if (idx > text.length){ clearInterval(t); setTimeout(typeLines, 450); }
+        }, 22 + Math.random()*40);
+      }
+
+      function finishSequence(){
+        flash.classList.add('on');
+        setTimeout(()=>flash.classList.remove('on'), 250);
+        setTimeout(()=>{
+          appendLine('\n*** PLOT TWIST ***\n');
+          appendLine('You were recruited for:');
+          setTimeout(()=>{
+            showInvite();
+          }, 700);
+        }, 400);
+      }
+
+      function showInvite(){
+        reveal.style.display = 'block';
+        reveal.setAttribute('aria-hidden', 'false');
+        terminal.style.opacity = '0.35';
+        dressCodeBtn.disabled = false; 
+      }
+
+      setTimeout(()=>{ typeLines(); }, 650);
+
+      
+      dressCodeBtn.addEventListener('click', function() {
+        if (!dressCodeImg.classList.contains('show')) {
+          dressCodeImg.classList.add('show');
+          this.textContent = '❌ Hide Dress Code';
+        } else {
+          dressCodeImg.classList.remove('show');
+          this.textContent = '👗 Show Dress Code';
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
